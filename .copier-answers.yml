@@ -1,0 +1,14 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: v4.3.5
+_src_path: https://github.com/jupyterlab/extension-template
+author_email: tim.metzler@h-brs.de
+author_name: Tim Metzler
+has_binder: false
+has_settings: false
+kind: frontend
+labextension_name: e2xgrader_cells
+project_short_description: A JupyterLab for displaying custom e2xgrader cells
+python_name: e2xgrader_cells
+repository: https://github.com/tmetzl/e2xgrader_cells
+test: true
+
