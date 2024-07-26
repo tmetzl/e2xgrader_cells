@@ -1,7 +1,7 @@
 {
     "name": "e2xgrader_cells",
     "version": "0.1.0",
-    "description": "A JupyterLab for displaying custom e2xgrader cells",
+    "description": "A JupyterLab extension for displaying custom e2xgrader cells",
     "keywords": [
         "jupyter",
         "jupyterlab",
