@@ -66,7 +66,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
         const notebook = notebookPanel.content;
         console.log('In process Cells, Notebook', notebook);
 
-        for (let cell of args.newValues) {
+        for (const cell of args.newValues) {
           // Find the widget by matching ids
           const cellWidget = notebook.widgets.find(
             widget => widget.model.id === cell.id
