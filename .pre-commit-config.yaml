@@ -20,11 +20,3 @@ repos:
       # Run the formatter.
       - id: ruff-format
 
-  - repo: local
-    hooks:
-      - id: prettier
-        name: prettier
-        entry: 'npm run prettier'
-        language: node
-        language_version: system
-        types_or: [json, markdown, ts, tsx, javascript, jsx, css]
