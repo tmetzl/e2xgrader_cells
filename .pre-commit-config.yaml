@@ -24,7 +24,7 @@ repos:
     hooks:
       - id: prettier
         name: prettier
-        entry: 'npm run prettier:files'
+        entry: 'npm run prettier:base'
         language: node
         language_version: system
         types_or: [json, markdown, ts, tsx, javascript, jsx, css]
