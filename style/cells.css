@@ -1,0 +1,9 @@
+.e2x_btn {
+  background-color: #eaf4f7;
+  box-shadow: none;
+  border: 1px solid #2792B3;
+}
+
+.e2x_grader_options hr {
+  border: .5px solid lightgray;
+}
