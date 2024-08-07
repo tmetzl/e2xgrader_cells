@@ -8,25 +8,25 @@ export interface IE2xGraderMetadata {
 }
 
 /**
- * Retrieves the E2xGrader metadata from a Markdown cell.
+ * Retrieves the e2xgrader metadata from a Markdown cell.
  * @param cell - The Markdown cell to retrieve the metadata from.
- * @returns The E2xGrader metadata object.
+ * @returns The e2xgrader metadata object.
  */
 export function getE2xGraderMetadata(cell: MarkdownCell): IE2xGraderMetadata {
   return cell.model?.getMetadata(E2X_METADATA_KEY) || {};
 }
 
 /**
- * Checks if a given Markdown cell is an e2x grader cell.
+ * Checks if a given Markdown cell is an e2xgrader cell.
  * @param cell - The Markdown cell to check.
- * @returns `true` if the cell is an e2x grader cell, `false` otherwise.
+ * @returns `true` if the cell is an e2xgrader cell, `false` otherwise.
  */
 export function isE2xGraderCell(cell: MarkdownCell): boolean {
   return getE2xGraderMetadata(cell).type !== undefined;
 }
 
 /**
- * Retrieves the E2xGrader cell type from the given Markdown cell.
+ * Retrieves the e2xgrader cell type from the given Markdown cell.
  * @param cell The Markdown cell to retrieve the cell type from.
  * @returns The E2xGrader cell type, or undefined if not found.
  */
@@ -35,13 +35,13 @@ export function getE2xGraderCellType(cell: MarkdownCell): string | undefined {
 }
 
 /**
- * Retrieves the value of a specific field from the e2x grader metadata of a Markdown cell.
- * If the cell is not an e2x grader cell or the field does not exist, it returns the defaultValue.
+ * Retrieves the value of a specific field from the e2xgrader metadata of a Markdown cell.
+ * If the cell is not an e2xgrader cell or the field does not exist, it returns the defaultValue.
  *
  * @param cell - The Markdown cell to retrieve the field value from.
  * @param field - The name of the field to retrieve.
  * @param defaultValue - The default value to return if the field is not found.
- * @returns The value of the specified field from the e2x grader metadata, or the defaultValue if the field is not found.
+ * @returns The value of the specified field from the e2xgrader metadata, or the defaultValue if the field is not found.
  */
 export function getE2xGraderField(
   cell: MarkdownCell,
@@ -56,7 +56,7 @@ export function getE2xGraderField(
 }
 
 /**
- * Sets the value of a specific field in the E2xGrader metadata of a Markdown cell.
+ * Sets the value of a specific field in the e2xgrader metadata of a Markdown cell.
  *
  * @param cell - The Markdown cell to update.
  * @param field - The name of the field to set.

@@ -22,9 +22,9 @@ const cellFactory: Record<
 };
 
 /**
- * Creates an E2x cell based on the given Markdown cell.
- * @param cell The Markdown cell to create the E2x cell from.
- * @returns The created E2x cell, or undefined if the cell type is not supported.
+ * Creates an e2xgrader cell based on the given Markdown cell.
+ * @param cell The Markdown cell to create the e2xgrader cell from.
+ * @returns The created e2xgrader cell, or undefined if the cell type is not supported.
  */
 export function e2xCellFactory(cell: MarkdownCell): IE2xCell | undefined {
   const cellType = getE2xGraderCellType(cell);
