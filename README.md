@@ -2,7 +2,7 @@
 
 [![Github Actions Status](https://github.com/tmetzl/e2xgrader_cells/workflows/Build/badge.svg)](https://github.com/tmetzl/e2xgrader_cells/actions/workflows/build.yml)
 
-A JupyterLab for displaying custom e2xgrader cells
+A JupyterLab extension for displaying custom e2xgrader cells
 
 ## Requirements
 
