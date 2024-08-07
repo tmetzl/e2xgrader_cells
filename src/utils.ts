@@ -1,4 +1,31 @@
-function hasE2xgraderCellTypeChanged(change: any) {
+import { MarkdownCell } from '@jupyterlab/cells';
+import { MimeModel } from '@jupyterlab/rendermime';
+
+/**
+ * Forces the rendering of a Markdown cell.
+ *
+ * @param cell - The Markdown cell to render.
+ */
+export function forceRender(cell: MarkdownCell): void {
+  const text =
+    cell.model?.sharedModel.getSource() || 'Type Markdown and LaTeX: $ a^2 $';
+  const readOnly = cell.readOnly;
+  cell.rendered = false;
+  cell.readOnly = false;
+  cell.renderer
+    .renderModel(new MimeModel({ data: { 'text/markdown': text } }))
+    .then(() => {
+      cell.rendered = true;
+      cell.readOnly = readOnly;
+    });
+}
+
+/**
+ * Checks if the E2x grader cell type has changed based on the given change object.
+ * @param change - The change object to check.
+ * @returns A boolean indicating whether the E2xGrader cell type has changed.
+ */
+export function hasE2xGraderCellTypeChanged(change: any): boolean {
   if (change.key !== 'extended_cell') {
     return false;
   }
@@ -19,5 +46,3 @@ function hasE2xgraderCellTypeChanged(change: any) {
 
   return true;
 }
-
-export { hasE2xgraderCellTypeChanged };
