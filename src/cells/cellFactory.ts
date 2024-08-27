@@ -1,12 +1,12 @@
-import { IE2xCell } from './base';
 import { MarkdownCell } from '@jupyterlab/cells';
-import { getE2xGraderCellType } from './utils';
-import {
-  E2X_MULTIPLECHOICE_CELL_TYPE,
-  E2X_SINGLECHOICE_CELL_TYPE,
-  MultipleChoiceCell,
-  SingleChoiceCell
-} from './choice';
+import { IE2xCell } from './base/base.interfaces';
+import MultipleChoiceCell from './choice/MultipleChoiceCell';
+import SingleChoiceCell from './choice/SingleChoiceCell';
+import DiagramCell from './diagram/DiagramCell';
+import { E2X_MULTIPLECHOICE_CELL_TYPE } from './choice/MultipleChoiceCell';
+import { E2X_SINGLECHOICE_CELL_TYPE } from './choice/SingleChoiceCell';
+import { E2X_DIAGRAM_CELL_TYPE } from './diagram/DiagramCell';
+import { getE2xGraderCellType } from './utils/cellUtils';
 
 /**
  * Factory object that maps cell types to their corresponding factory functions.
@@ -18,7 +18,9 @@ const cellFactory: Record<
   [E2X_MULTIPLECHOICE_CELL_TYPE]: (cell: MarkdownCell, type: string) =>
     new MultipleChoiceCell(cell),
   [E2X_SINGLECHOICE_CELL_TYPE]: (cell: MarkdownCell, type: string) =>
-    new SingleChoiceCell(cell)
+    new SingleChoiceCell(cell),
+  [E2X_DIAGRAM_CELL_TYPE]: (cell: MarkdownCell, type: string) =>
+    new DiagramCell(cell)
 };
 
 /**
