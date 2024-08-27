@@ -54,12 +54,6 @@ export default class AttachmentModel extends Observable {
   load() {
     this.id = 0;
     Object.assign(this.attachments, this.cell.model.sharedModel.attachments);
-    console.log('Loaded attachments.');
-    console.log('this.attachments', this.attachments);
-    console.log(
-      'this.cell.model.attachments',
-      this.cell.model.sharedModel.attachments
-    );
     Object.keys(this.attachments).forEach(key => {
       this.id += 1;
       this.ids[key] = this.id;

@@ -21,10 +21,6 @@ function listenToMetadataChanges(cellWidget: any) {
   // Problem: This does not seem to be triggered when a metadata key is removed via the metadata editor
   // However, it is triggered when the metadata is changed via deleteMetadata
   cell.metadataChanged.connect((_: any, args: any) => {
-    //console.log('Cell metadata changed', cell.toJSON(), args);
-
-    //cellMetadataChanged(args, markdownCellWidget);
-
     console.log(
       'Did the e2xgrader cell type change?',
       hasE2xGraderCellTypeChanged(args)
@@ -41,7 +37,6 @@ function listenToRenderChanges(cellWidget: any) {
     return;
   }
   const markdownCellWidget = cellWidget as MarkdownCell;
-  console.log('markdownCellWidget', markdownCellWidget);
   markdownCellWidget.renderedChanged.connect((_: any, isRendered: boolean) => {
     // Skip if the cell is not rendered
     if (!isRendered) {
@@ -92,10 +87,6 @@ const plugin: JupyterFrontEndPlugin<void> = {
             console.error('Cell widget not found');
             continue;
           }
-
-          //console.log('New cell', cell.toJSON(), cell);
-          //console.log('New cell widget', cellWidget.model.toJSON(), cellWidget);
-          //console.log('E2xGrader cell type', getE2xGraderCellType(cell));
 
           listenToMetadataChanges(cellWidget);
           listenToRenderChanges(cellWidget);

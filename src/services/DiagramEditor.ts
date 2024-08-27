@@ -84,7 +84,6 @@ export default class DiagramEditor {
       elt.diagramEditorStarting = true;
 
       return new DiagramEditor(() => {
-        console.log('Initialized diagram editor thingy');
         delete elt.diagramEditorStarting;
         initialized();
       }, cell).editElement(elt);
@@ -249,7 +248,6 @@ export default class DiagramEditor {
   }
 
   handleMessage(msg: IDiagramMessage) {
-    console.log('Received message', msg);
     if (msg.event === 'configure') {
       this.configureEditor();
     } else if (msg.event === 'init') {
@@ -319,6 +317,6 @@ export default class DiagramEditor {
   }
 
   done(data: any, draft: any, elt: any) {
-    console.log('Calling done', data, draft, elt);
+    // Pass
   }
 }
