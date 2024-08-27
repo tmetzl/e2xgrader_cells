@@ -12,7 +12,7 @@ export interface IE2xCell {
 
 const E2X_GRADER_SETTINGS_CLASS = 'e2x_grader_options';
 const E2X_UNRENDER_BUTTON_CLASS = 'e2x_unrender';
-const E2X_BUTTON_CLASS = 'e2x_btn';
+export const E2X_BUTTON_CLASS = 'e2x_btn';
 
 export class E2xCell implements IE2xCell {
   cell: MarkdownCell;
