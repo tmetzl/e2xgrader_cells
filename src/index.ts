@@ -9,7 +9,7 @@ import { hasE2xGraderCellTypeChanged } from './utils';
 import { MarkdownCell } from '@jupyterlab/cells';
 import { forceRender } from './utils';
 
-import { e2xCellFactory } from './cells/factory';
+import { e2xCellFactory } from './cells/cellFactory';
 
 function listenToMetadataChanges(cellWidget: any) {
   // Skip non markdown cells
@@ -41,6 +41,7 @@ function listenToRenderChanges(cellWidget: any) {
     return;
   }
   const markdownCellWidget = cellWidget as MarkdownCell;
+  console.log('markdownCellWidget', markdownCellWidget);
   markdownCellWidget.renderedChanged.connect((_: any, isRendered: boolean) => {
     // Skip if the cell is not rendered
     if (!isRendered) {
