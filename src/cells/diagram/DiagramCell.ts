@@ -95,6 +95,10 @@ export default class DiagramCell extends E2xCell implements IDiagramCell {
     diagramImage.className = E2X_DIAGRAM_CLASS;
     this.updateDiagram(diagramImage);
     const diagramEditButton = this.createDiagramEditButton(diagramImage);
+    // Remove all existing diagram buttons, by class name
+    html.querySelectorAll(`.${E2X_BUTTON_CLASS}`).forEach(button => {
+      button.remove();
+    });
     html.appendChild(diagramEditButton);
   }
 }
