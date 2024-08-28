@@ -4,14 +4,7 @@ import {
   IDiagramMessage
 } from './diagram-editor.interfaces';
 import { IDiagramCell } from '../cells/diagram/diagram.interfaces';
-
-async function fetchBaseOptions() {
-  return {
-    drawDomain: 'https://embed.diagrams.net/',
-    drawOrigin: 'https://embed.diagrams.net/',
-    libs: []
-  };
-}
+import Settings from '../services/Settings';
 
 export default class DiagramEditor {
   cell: IDiagramCell;
@@ -271,23 +264,31 @@ export default class DiagramEditor {
   }
 }
 
-export function startDiagramEditor(cell: IDiagramCell, elt: any) {
-  fetchBaseOptions().then(options => {
-    console.log('fetchBaseOptions', options);
-    const loading = document.createElement('div');
-    loading.className = 'e2x_spinner_container';
-    const spinner = document.createElement('div');
-    spinner.classList.add('jp-SpinnerContent');
-    spinner.classList.add('e2x_spinner');
-    loading.appendChild(spinner);
-    document.body.appendChild(loading);
+function convertSettingToOptions(setting: any): IDiagramEditorOptions {
+  return {
+    drawDomain: setting.drawDomain,
+    drawOrigin: setting.drawOrigin,
+    libs: setting.libs
+  };
+}
 
-    return new DiagramEditor(
-      cell,
-      () => {
-        loading.remove();
-      },
-      options
-    ).editElement(elt);
-  });
+export function startDiagramEditor(cell: IDiagramCell, elt: any) {
+  const my_settings = Settings.getInstance().get('diagram_options')
+    .composite as object;
+  const options = convertSettingToOptions(my_settings);
+  const loading = document.createElement('div');
+  loading.className = 'e2x_spinner_container';
+  const spinner = document.createElement('div');
+  spinner.classList.add('jp-SpinnerContent');
+  spinner.classList.add('e2x_spinner');
+  loading.appendChild(spinner);
+  document.body.appendChild(loading);
+
+  return new DiagramEditor(
+    cell,
+    () => {
+      loading.remove();
+    },
+    options
+  ).editElement(elt);
 }
