@@ -1,3 +1,9 @@
+.e2x-diagram {
+  display: block;
+  margin: auto;
+  border: 1px dashed gray;
+}
+
 .e2x_btn {
   background-color: #eaf4f7;
   box-shadow: none;
