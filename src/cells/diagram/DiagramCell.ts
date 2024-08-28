@@ -1,10 +1,10 @@
-import DiagramEditor from '../../services/DiagramEditor';
+import { startDiagramEditor } from '../../services/DiagramEditor';
 import { IDiagramCell, Base64ImageString } from './diagram.interfaces';
 import E2xCell from '../base/BaseCell';
 import AttachmentModel from '../../models/AttachmentModel';
 import { forceRender } from '../../utils';
 import { getHTML } from '../utils/cellUtils';
-import { E2X_BUTTON_CLASS } from '../../constants';
+import { E2X_BUTTON_CLASS, E2X_DIAGRAM_CLASS } from '../../constants';
 
 export const E2X_DIAGRAM_CELL_TYPE = 'diagram';
 
@@ -17,16 +17,24 @@ export default class DiagramCell extends E2xCell implements IDiagramCell {
     this.diagram_file_name = 'diagram.png';
     this.model = new AttachmentModel(this);
     this.initialize();
+    console.log('DiagramCell initialized', this);
   }
 
   initialize(): void {
     this.model.load();
     if (!this.model.hasAttachment(this.diagram_file_name)) {
-      // set the attachment to a base64 encoded blank image
-      this.model.setAttachment(
-        'diagram.png',
-        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAOElEQVR42mNkYGD4z0ABYIwBf4D8QwX'
-      );
+      // Create a blank image attachment
+      const canvas = document.createElement('canvas');
+      canvas.width = 320;
+      canvas.height = 240;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const blankImageBase64 = canvas.toDataURL('image/png');
+        this.model.setAttachment('diagram.png', blankImageBase64);
+      }
+      canvas.remove();
     }
   }
 
@@ -55,16 +63,7 @@ export default class DiagramCell extends E2xCell implements IDiagramCell {
     diagramEditButton.innerHTML = 'Edit Diagram';
     diagramEditButton.className = E2X_BUTTON_CLASS;
     diagramEditButton.onclick = () => {
-      const loading = document.createElement('div');
-      loading.className = 'e2x_spinner_container';
-      const spinner = document.createElement('div');
-      spinner.classList.add('jp-SpinnerContent');
-      spinner.classList.add('e2x_spinner');
-      loading.appendChild(spinner);
-      document.body.appendChild(loading);
-      DiagramEditor.editDiagram(this, diagramImage, () => {
-        loading.remove();
-      });
+      startDiagramEditor(this, diagramImage);
     };
     return diagramEditButton;
   }
@@ -93,6 +92,7 @@ export default class DiagramCell extends E2xCell implements IDiagramCell {
     if (!diagramImage) {
       return;
     }
+    diagramImage.className = E2X_DIAGRAM_CLASS;
     this.updateDiagram(diagramImage);
     const diagramEditButton = this.createDiagramEditButton(diagramImage);
     html.appendChild(diagramEditButton);

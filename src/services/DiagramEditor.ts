@@ -1,62 +1,45 @@
 import {
   IDiagramEditorOptions,
-  InitializedCallback
+  InitializedCallback,
+  IDiagramMessage
 } from './diagram-editor.interfaces';
 import { IDiagramCell } from '../cells/diagram/diagram.interfaces';
 
-const baseOptions: IDiagramEditorOptions = {
-  drawDomain: 'https://embed.diagrams.net/',
-  drawOrigin: 'https://embed.diagrams.net/',
-  libs: []
-};
-
 async function fetchBaseOptions() {
-  return baseOptions;
-}
-
-type DiagramMessageEvent =
-  | 'configure'
-  | 'init'
-  | 'autosave'
-  | 'export'
-  | 'save'
-  | 'exit';
-
-interface IDiagramMessage {
-  event: DiagramMessageEvent;
-  xml: any;
-  data: any;
-  modified: any;
-  exit: any;
+  return {
+    drawDomain: 'https://embed.diagrams.net/',
+    drawOrigin: 'https://embed.diagrams.net/',
+    libs: []
+  };
 }
 
 export default class DiagramEditor {
-  initialized: InitializedCallback;
   cell: IDiagramCell;
+  initialized: InitializedCallback;
+  options: IDiagramEditorOptions;
   frame: HTMLIFrameElement | null;
   startElement: any;
   format: string;
   xml: any;
-  drawDomain: string;
-  origin: string;
   frameStyle: string;
-  libs: string[];
   data: any;
   previousCursor: any;
   previousOverflow: any;
 
-  constructor(initialized: any, cell: any) {
+  constructor(
+    cell: IDiagramCell,
+    initialized: InitializedCallback,
+    options: IDiagramEditorOptions
+  ) {
     this.initialized = initialized || function () {};
     this.cell = cell;
     this.frame = null;
     this.startElement = null;
     this.format = 'xml';
     this.xml = null;
-    this.drawDomain = baseOptions.drawDomain || 'https://embed.diagrams.net/';
-    this.origin = baseOptions.drawOrigin || 'https://embed.diagrams.net/';
+    this.options = options;
     this.frameStyle =
       'position:absolute;bottom:0;border:0;width:100%;height:100%;';
-    this.libs = baseOptions.libs || [];
     // We need to bind handleMessageEvent to this so that it can access the class properties
     this.handleMessageEvent = this.handleMessageEvent.bind(this);
   }
@@ -77,23 +60,6 @@ export default class DiagramEditor {
         console.error(e);
       }
     }
-  }
-
-  static editElement(cell: any, elt: any, initialized: any) {
-    if (!elt.diagramEditorStarting) {
-      elt.diagramEditorStarting = true;
-
-      return new DiagramEditor(() => {
-        delete elt.diagramEditorStarting;
-        initialized();
-      }, cell).editElement(elt);
-    }
-  }
-
-  static async editDiagram(cell: any, elt: any, initialized: any) {
-    fetchBaseOptions().then(() => {
-      return this.editElement(cell, elt, initialized);
-    });
   }
 
   editElement(elem: any) {
@@ -176,7 +142,7 @@ export default class DiagramEditor {
     }
   }
 
-  setActive(active: any) {
+  setActive(active: boolean) {
     if (active) {
       this.previousOverflow = document.body.style.overflow;
       document.body.style.overflow = 'hidden';
@@ -196,7 +162,10 @@ export default class DiagramEditor {
 
   postMessage(msg: any) {
     if (this.frame && this.frame.contentWindow) {
-      this.frame.contentWindow.postMessage(JSON.stringify(msg), this.origin);
+      this.frame.contentWindow.postMessage(
+        JSON.stringify(msg),
+        this.options.drawOrigin
+      );
     }
   }
 
@@ -219,12 +188,12 @@ export default class DiagramEditor {
   }
 
   getFrameUrl() {
-    const url = new URL(this.drawDomain);
+    const url = new URL(this.options.drawDomain);
     url.searchParams.append('proto', 'json');
     url.searchParams.append('spin', '1');
 
-    if (this.libs.length > 0) {
-      url.searchParams.append('libs', this.libs.join(';'));
+    if (this.options.libs && this.options.libs.length > 0) {
+      url.searchParams.append('libs', this.options.libs.join(';'));
     }
 
     return url.href;
@@ -249,20 +218,16 @@ export default class DiagramEditor {
 
   handleMessage(msg: IDiagramMessage) {
     if (msg.event === 'configure') {
-      this.configureEditor();
+      this.postMessage({ action: 'configure' });
     } else if (msg.event === 'init') {
       this.initializeEditor();
-    } else if (msg.event === 'autosave') {
-      this.save(msg.xml, true, this.startElement);
     } else if (msg.event === 'export') {
       this.cell.updateDiagramAttachment(msg.data);
       this.setElementData(this.startElement, msg.data);
       this.stopEditing();
       this.xml = null;
     } else if (msg.event === 'save') {
-      this.save(msg.xml, false, this.startElement);
       this.xml = msg.xml;
-
       if (msg.exit) {
         msg.event = 'exit';
       } else {
@@ -271,11 +236,11 @@ export default class DiagramEditor {
     }
 
     if (msg.event === 'exit') {
-      this.handleExitMessage(msg);
+      this.handleExitMessage();
     }
   }
 
-  handleExitMessage(msg: IDiagramMessage) {
+  handleExitMessage() {
     if (this.format !== 'xml') {
       if (this.xml !== null) {
         this.postMessage({
@@ -288,15 +253,8 @@ export default class DiagramEditor {
         this.stopEditing();
       }
     } else {
-      if (msg.modified === null || msg.modified) {
-        this.save(msg.xml, false, this.startElement);
-      }
       this.stopEditing();
     }
-  }
-
-  configureEditor() {
-    this.postMessage({ action: 'configure' });
   }
 
   initializeEditor() {
@@ -311,12 +269,25 @@ export default class DiagramEditor {
     this.setActive(true);
     this.initialized();
   }
+}
 
-  save(data: any, draft: any, elt: any) {
-    this.done(data, draft, elt);
-  }
+export function startDiagramEditor(cell: IDiagramCell, elt: any) {
+  fetchBaseOptions().then(options => {
+    console.log('fetchBaseOptions', options);
+    const loading = document.createElement('div');
+    loading.className = 'e2x_spinner_container';
+    const spinner = document.createElement('div');
+    spinner.classList.add('jp-SpinnerContent');
+    spinner.classList.add('e2x_spinner');
+    loading.appendChild(spinner);
+    document.body.appendChild(loading);
 
-  done(data: any, draft: any, elt: any) {
-    // Pass
-  }
+    return new DiagramEditor(
+      cell,
+      () => {
+        loading.remove();
+      },
+      options
+    ).editElement(elt);
+  });
 }
