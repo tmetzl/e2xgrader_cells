@@ -7,11 +7,14 @@ import {
   E2X_UNRENDER_BUTTON_CLASS,
   E2X_BUTTON_CLASS
 } from '../../constants';
+import { ISettingRegistry } from '@jupyterlab/settingregistry';
+import Settings from '../../services/Settings';
 
 export default class E2xCell implements IE2xCell {
   cell: MarkdownCell;
   type: string;
   options: object;
+  editMode: boolean;
 
   constructor(cell: MarkdownCell, type: string, options: object = {}) {
     this.cell = cell;
@@ -19,6 +22,23 @@ export default class E2xCell implements IE2xCell {
     this.options = options;
     // Make sure cells can not be unrendered
     this.cell.showEditorForReadOnly = false;
+    this.editMode = true;
+
+    const settings = Settings.getInstance();
+
+    this.onSettingsChanged(settings);
+    settings.changed.connect(this.onSettingsChanged, this);
+  }
+
+  onSettingsChanged(settings: ISettingRegistry.ISettings): void {
+    const newEditMode = settings.get('edit_mode').composite as boolean;
+    if (newEditMode !== this.editMode) {
+      this.editMode = newEditMode;
+      console.log('Edit mode changed to', this.editMode);
+      if (this.cell.rendered) {
+        this.onCellRendered();
+      }
+    }
   }
 
   onCellRendered() {
@@ -33,7 +53,9 @@ export default class E2xCell implements IE2xCell {
       )
       .then(() => {
         this.manipulateHTML();
-        this.renderGraderSettings();
+        if (this.editMode) {
+          this.renderGraderSettings();
+        }
       });
   }
 
