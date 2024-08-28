@@ -3,6 +3,7 @@ import {
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 
+import { ISettingRegistry } from '@jupyterlab/settingregistry';
 import { INotebookTracker } from '@jupyterlab/notebook';
 import { hasE2xGraderCellTypeChanged } from './utils';
 
@@ -10,6 +11,9 @@ import { MarkdownCell } from '@jupyterlab/cells';
 import { forceRender } from './utils';
 
 import { e2xCellFactory } from './cells/cellFactory';
+
+import { PLUGIN_ID } from './constants';
+import Settings from './services/Settings';
 
 function listenToMetadataChanges(cellWidget: any) {
   // Skip non markdown cells
@@ -54,12 +58,18 @@ function listenToRenderChanges(cellWidget: any) {
  * Initialization data for the e2xgrader_cells extension.
  */
 const plugin: JupyterFrontEndPlugin<void> = {
-  id: 'e2xgrader_cells:plugin',
+  id: PLUGIN_ID,
   description: 'A JupyterLab for displaying custom e2xgrader cells',
   autoStart: true,
-  requires: [INotebookTracker],
-  activate: (app: JupyterFrontEnd, notebooks: INotebookTracker) => {
+  requires: [INotebookTracker, ISettingRegistry],
+  activate: (
+    app: JupyterFrontEnd,
+    notebooks: INotebookTracker,
+    settings: ISettingRegistry
+  ) => {
     console.log('JupyterLab extension e2xgrader_cells is activated!');
+
+    Settings.initialize(settings);
 
     notebooks.widgetAdded.connect((_, notebookPanel) => {
       const notebook = notebookPanel.content;
