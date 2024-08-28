@@ -13,14 +13,13 @@ import { getE2xGraderCellType } from './utils/cellUtils';
  */
 const cellFactory: Record<
   string,
-  (cell: MarkdownCell, type: string) => IE2xCell | undefined
+  (cell: MarkdownCell) => IE2xCell | undefined
 > = {
-  [E2X_MULTIPLECHOICE_CELL_TYPE]: (cell: MarkdownCell, type: string) =>
+  [E2X_MULTIPLECHOICE_CELL_TYPE]: (cell: MarkdownCell) =>
     new MultipleChoiceCell(cell),
-  [E2X_SINGLECHOICE_CELL_TYPE]: (cell: MarkdownCell, type: string) =>
+  [E2X_SINGLECHOICE_CELL_TYPE]: (cell: MarkdownCell) =>
     new SingleChoiceCell(cell),
-  [E2X_DIAGRAM_CELL_TYPE]: (cell: MarkdownCell, type: string) =>
-    new DiagramCell(cell)
+  [E2X_DIAGRAM_CELL_TYPE]: (cell: MarkdownCell) => new DiagramCell(cell)
 };
 
 /**
@@ -31,7 +30,7 @@ const cellFactory: Record<
 export function e2xCellFactory(cell: MarkdownCell): IE2xCell | undefined {
   const cellType = getE2xGraderCellType(cell);
   if (cellType !== undefined && cellType in cellFactory) {
-    return cellFactory[cellType](cell, cellType);
+    return cellFactory[cellType](cell);
   }
   return undefined;
 }
