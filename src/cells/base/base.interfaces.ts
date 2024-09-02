@@ -5,5 +5,6 @@ export interface IE2xCell {
   type: string;
   options: object;
   onCellRendered: () => void;
+  manipulateHTML: (html: Element) => void;
   renderGraderSettings: (html: Element) => void;
 }
