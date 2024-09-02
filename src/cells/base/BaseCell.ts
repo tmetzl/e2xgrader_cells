@@ -34,7 +34,6 @@ export default class E2xCell implements IE2xCell {
     const newEditMode = settings.get('edit_mode').composite as boolean;
     if (newEditMode !== this.editMode) {
       this.editMode = newEditMode;
-      console.log('Edit mode changed to', this.editMode);
       if (this.cell.rendered) {
         this.onCellRendered();
       }
@@ -52,22 +51,27 @@ export default class E2xCell implements IE2xCell {
         })
       )
       .then(() => {
-        this.manipulateHTML();
-        if (this.editMode) {
-          this.renderGraderSettings();
-        }
+        this.render();
+      })
+      .catch(error => {
+        console.error('Error rendering cell', error);
       });
   }
 
-  manipulateHTML() {
+  render(): void {
+    getHTML(this.cell).then(html => {
+      this.manipulateHTML(html);
+      if (this.editMode) {
+        this.renderGraderSettings(html);
+      }
+    });
+  }
+
+  manipulateHTML(html: Element): void {
     return;
   }
 
-  renderGraderSettings() {
-    const html = getHTML(this.cell);
-    if (!html) {
-      return;
-    }
+  renderGraderSettings(html: Element): void {
     const container = document.createElement('div');
     container.className = E2X_GRADER_SETTINGS_CLASS;
     const unrenderButton = document.createElement('button');
