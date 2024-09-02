@@ -3,7 +3,6 @@ import { IDiagramCell, Base64ImageString } from './diagram.interfaces';
 import E2xCell from '../base/BaseCell';
 import AttachmentModel from '../../models/AttachmentModel';
 import { forceRender } from '../../utils';
-import { getHTML } from '../utils/cellUtils';
 import { E2X_BUTTON_CLASS, E2X_DIAGRAM_CLASS } from '../../constants';
 
 export const E2X_DIAGRAM_CELL_TYPE = 'diagram';
@@ -17,7 +16,6 @@ export default class DiagramCell extends E2xCell implements IDiagramCell {
     this.diagram_file_name = 'diagram.png';
     this.model = new AttachmentModel(this);
     this.initialize();
-    console.log('DiagramCell initialized', this);
   }
 
   initialize(): void {
@@ -36,14 +34,6 @@ export default class DiagramCell extends E2xCell implements IDiagramCell {
       }
       canvas.remove();
     }
-  }
-
-  getDiagramImage(): HTMLImageElement | null {
-    const html = getHTML(this.cell);
-    if (!html) {
-      return null;
-    }
-    return html.querySelector('img[alt="diagram"]');
   }
 
   updateDiagramAttachment(attachment: Base64ImageString): void {
@@ -68,11 +58,7 @@ export default class DiagramCell extends E2xCell implements IDiagramCell {
     return diagramEditButton;
   }
 
-  manipulateHTML(): void {
-    const html = getHTML(this.cell);
-    if (!html) {
-      return;
-    }
+  manipulateHTML(html: Element): void {
     const attachment_string = `![diagram](attachment:${this.diagram_file_name})`;
     const attachment_comment = '<!-- Display the diagram attachment -->';
     if (

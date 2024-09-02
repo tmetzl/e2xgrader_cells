@@ -1,9 +1,5 @@
 import { MarkdownCell } from '@jupyterlab/cells';
-import {
-  getHTML,
-  getE2xGraderField,
-  setE2xGraderField
-} from '../utils/cellUtils';
+import { getE2xGraderField, setE2xGraderField } from '../utils/cellUtils';
 import ChoiceCell from './ChoiceCell';
 
 export const E2X_MULTIPLECHOICE_CELL_TYPE = 'multiplechoice';
@@ -65,11 +61,7 @@ export default class MultipleChoiceCell extends ChoiceCell {
     return choice;
   }
 
-  manipulateHTML(): void {
-    const html = getHTML(this.cell);
-    if (!html) {
-      return;
-    }
+  manipulateHTML(html: Element): void {
     const lists = html.querySelectorAll('ul');
 
     if (lists.length === 0) {
