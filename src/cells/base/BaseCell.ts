@@ -10,7 +10,7 @@ import {
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 import Settings from '../../services/Settings';
 
-export default class E2xCell implements IE2xCell {
+export default abstract class E2xCell implements IE2xCell {
   cell: MarkdownCell;
   type: string;
   options: object;
@@ -67,9 +67,7 @@ export default class E2xCell implements IE2xCell {
     });
   }
 
-  manipulateHTML(html: Element): void {
-    return;
-  }
+  abstract manipulateHTML(html: Element): void;
 
   renderGraderSettings(html: Element): void {
     const container = document.createElement('div');
