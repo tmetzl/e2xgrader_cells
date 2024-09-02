@@ -10,8 +10,8 @@ export function forceRender(cell: MarkdownCell): void {
   const text =
     cell.model?.sharedModel.getSource() || 'Type Markdown and LaTeX: $ a^2 $';
   const readOnly = cell.readOnly;
-  cell.rendered = false;
   cell.readOnly = false;
+  cell.rendered = false;
   cell.renderer
     .renderModel(new MimeModel({ data: { 'text/markdown': text } }))
     .then(() => {
