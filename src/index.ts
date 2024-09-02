@@ -15,43 +15,33 @@ import { e2xCellFactory } from './cells/cellFactory';
 import { PLUGIN_ID } from './constants';
 import Settings from './services/Settings';
 
-function listenToMetadataChanges(cellWidget: any) {
-  // Skip non markdown cells
-  if (!cellWidget.model.type || cellWidget.model.type !== 'markdown') {
-    return;
-  }
-  const markdownCellWidget = cellWidget as MarkdownCell;
-  const cell = markdownCellWidget.model;
+function listenToMetadataChanges(cell: MarkdownCell) {
+  const model = cell.model;
   // Problem: This does not seem to be triggered when a metadata key is removed via the metadata editor
   // However, it is triggered when the metadata is changed via deleteMetadata
-  cell.metadataChanged.connect((_: any, args: any) => {
+  model.metadataChanged.connect((_: any, args: any) => {
     console.log(
       'Did the e2xgrader cell type change?',
       hasE2xGraderCellTypeChanged(args)
     );
     if (hasE2xGraderCellTypeChanged(args)) {
-      forceRender(markdownCellWidget);
+      forceRender(cell);
     }
   });
 }
 
-function listenToRenderChanges(cellWidget: any) {
-  // Skip non markdown cells
-  if (!cellWidget.model.type || cellWidget.model.type !== 'markdown') {
-    return;
-  }
-  const markdownCellWidget = cellWidget as MarkdownCell;
-  markdownCellWidget.renderedChanged.connect((_: any, isRendered: boolean) => {
+function listenToRenderChanges(cell: MarkdownCell) {
+  cell.renderedChanged.connect((_: any, isRendered: boolean) => {
     // Skip if the cell is not rendered
     if (!isRendered) {
       return;
     }
-    const e2xCell = e2xCellFactory(markdownCellWidget);
+    const e2xCell = e2xCellFactory(cell);
     if (e2xCell) {
       e2xCell.onCellRendered();
     }
   });
-  forceRender(markdownCellWidget);
+  forceRender(cell);
 }
 
 /**
@@ -98,11 +88,13 @@ const plugin: JupyterFrontEndPlugin<void> = {
             continue;
           }
 
-          listenToMetadataChanges(cellWidget);
-          listenToRenderChanges(cellWidget);
+          const markdownCellWidget = cellWidget as MarkdownCell;
+
+          listenToMetadataChanges(markdownCellWidget);
+          listenToRenderChanges(markdownCellWidget);
 
           // Rerender e2xgrader cells
-          forceRender(cellWidget as MarkdownCell);
+          forceRender(markdownCellWidget);
         }
       });
     });
