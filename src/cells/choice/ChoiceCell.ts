@@ -3,7 +3,10 @@ import { MarkdownCell } from '@jupyterlab/cells';
 import { getE2xGraderField, setE2xGraderField } from '../utils/cellUtils';
 import { IChoiceCell } from './choice.interfaces';
 
-export default class ChoiceCell extends E2xCell implements IChoiceCell {
+export default abstract class ChoiceCell
+  extends E2xCell
+  implements IChoiceCell
+{
   choice_field: string;
 
   constructor(cell: MarkdownCell, type: string, options: object = {}) {
